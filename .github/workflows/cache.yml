@@ -1,0 +1,34 @@
+name: CI Cache Demo
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # (Optional) create a folder we will cache
+      - name: Prepare cache content
+        run: |
+          mkdir -p .cache-158b0c0
+          date > .cache-158b0c0/when.txt
+
+      - name: Use cache
+        id: cache-158b0c0
+        uses: actions/cache@v4
+        with:
+          path: .cache-158b0c0
+          key: cache-158b0c0
+
+      - name: prime-cache-158b0c0
+        run: |
+          if [ "${{ steps.cache-158b0c0.outputs.cache-hit }}" = "true" ]; then
+            echo "Cache hit"
+          else
+            echo "Cache miss"
+          fi
